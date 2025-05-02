@@ -1,54 +1,59 @@
-Password Manager Vault
-Password Manager Vault is a Notion-style password management application created by Abdul Basit Memon. It allows users to securely store passwords, API keys, and other credentials offline, with support for folder organization, custom fields, and an interactive, customizable interface.
+# 🔐 Password Manager Vault
 
+**Password Manager Vault** is a Notion-style password management desktop application created by **Abdul Basit Memon**. It enables users to securely store passwords, API keys, and other credentials _offline_, offering folder organization, custom fields, rich content blocks, and an interactive, customizable interface.
 
+---
 
+## 🌟 Features
 
-🌟 Features
-🔒 Securely store passwords, API keys, and other sensitive credentials
+- **Secure Storage**  
+  Store passwords, API keys, and other sensitive data locally.
 
-📁 Organize credentials using folders with support for categories
+- **Folder Organization**  
+  Create multiple folders and categorize credentials.
 
-➕ Add custom fields to credentials as needed
+- **Custom Fields**  
+  Add arbitrary fields to any credential entry (e.g., “Security Question,” “PIN,” etc.).
 
-✍️ Create and style text, headings, paragraphs, quotes, and tables
+- **Rich Content Blocks**  
+  Insert and style headings, paragraphs, quotes, tables, and free-form text within any folder.
 
-🔎 Powerful search function for quick access
+- **Powerful Search**  
+  Quickly find entries across all folders by keyword or tag.
 
-📤 Export credentials to Excel (XLSX) or JSON format
+- **Export**  
+  Export your vault to **Excel (.xlsx)** or **JSON** for backup and portability.
 
-🎨 Apply interactive templates to enhance the UI experience
+- **Themes & Templates**  
+  Apply built-in UI themes or import your own templates to change the look and feel.
 
-🖥️ Screenshots
+---
 
-![Master Password Screen](Screenshorts/MasterPassword.png)
+## 🖥️ Screenshots
 
-![Vault Overview](Screenshorts/Vault.png)
+| Master Password Screen                | Vault Overview                         | Creating a New Folder                  | Credentials View                       |
+|---------------------------------------|----------------------------------------|----------------------------------------|----------------------------------------|
+| ![Master Password](screenshots/MasterPassword.png) | ![Vault](screenshots/Vault.png)             | ![New Folder](screenshots/NewFolder.png)     | ![Credentials](screenshots/Credentials.png) |
 
-![Creating a New Folder](Screenshorts/NewFolder.png)
+---
 
-![Credentials View](Screenshorts/Credentails.png)
+## ⚙️ System Requirements
 
-⚙️ System Requirements
-Python 3.12 or later
+- **Python** ≥ 3.12  
+- **Tkinter** (built-in)  
+- **sqlite3** (built-in)  
+- **openpyxl** (for Excel export)  
+- **json** (built-in)
 
-tkinter (built-in GUI library)
+---
 
-sqlite3 (built-in database)
+## 📦 Installation
 
-openpyxl (Excel export)
-
-json (built-in)
-
-📦 Installation
-Clone the repository
-
-bash
-Copy
-Edit
-git clone https://github.com/abm1119/password-manager-vault.git
-cd password-manager-vault
-Install required dependencies
+1. **Clone the repository**  
+   ```bash
+   git clone https://github.com/abm1119/password-manager-vault.git
+   cd password-manager-vault
+Install dependencies
 
 bash
 Copy
@@ -60,48 +65,58 @@ bash
 Copy
 Edit
 python app.py
-📁 Application Structure
-app.py – Main Tkinter GUI and logic
-
-db_handler.py – SQLite database operations
-
-styles.py – Theme and UI customization
-
-screenshots/ – Screenshots for README and documentation
-
+📁 Project Structure
+text
+Copy
+Edit
+password-manager-vault/
+├── app.py              # Main application (Tkinter GUI + logic)
+├── db_handler.py       # SQLite database operations
+├── styles.py           # UI themes and style definitions
+├── requirements.txt    # Python dependencies
+├── LICENSE             # MIT License
+└── screenshots/        # Images for README documentation
 🗃️ Database Schema
-users – Stores usernames and hashed passwords
+users
+Stores usernames and hashed master passwords.
 
-passwords – Stores site, username, and encrypted password
-
-Uses PBKDF2 for password hashing
+passwords
+Stores credential entries: site, username, encrypted password, and custom fields.
+All passwords and sensitive fields are encrypted using PBKDF2.
 
 🔐 Security
-Passwords encrypted using PBKDF2
+PBKDF2 Hashing
+Master passwords and individual credentials are hashed and salted using PBKDF2.
 
-Input validation to prevent SQL injection
+Input Validation
+Sanitizes all user inputs to prevent SQL injection and other attacks.
 
-Local-only storage for full offline access and privacy
+Offline-First
+Entire vault resides locally; no cloud or external servers by default.
 
 🚀 Future Development
-🧑‍🤝‍🧑 Multi-user account support
+Multi-User Support
+Separate vaults for different profiles on the same machine.
 
-📤 Secure password sharing and collaboration
+Secure Sharing
+Encrypted export/import for sharing specific credentials with others.
 
-🔐 Two-factor authentication
+Two-Factor Authentication
+Add 2FA (TOTP) for unlocking the vault.
 
-📄 Richer template and UI customization features
+Bulk Import/Export
+CSV and encrypted backup formats.
 
-📁 Bulk import/export with encryption
+Additional Themes & Plugins
+Allow third-party UI themes and extensions.
 
 📄 License
 This project is licensed under the MIT License. See the LICENSE file for details.
 
 🙏 Acknowledgments
-Tkinter – for the GUI
+Tkinter – Python’s built-in GUI toolkit
+sqlite3 – Embedded SQL database
+openpyxl – Excel (.xlsx) read/write library
+json – Native JSON serialization
 
-sqlite3 – for local database
-
-openpyxl – for Excel export
-
-Python’s built-in json module – for JSON export
+Created by Abdul Basit Memon

@@ -53,70 +53,71 @@
    ```bash
    git clone https://github.com/abm1119/password-manager-vault.git
    cd password-manager-vault
-Install dependencies
 
-bash
-Copy
-Edit
-pip install -r requirements.txt
-Run the application
+2. **Install dependencies**
+   ```bash
+   pip install -r requirements.txt
+   ```
 
-bash
-Copy
-Edit
-python app.py
-📁 Project Structure
-text
-Copy
-Edit
+3. **Run the application**
+   ```bash
+   python app.py
+   ```
+
+## 💻 Usage
+
+1. Set a **master password** on first launch
+2. Create folders for organizing your credentials
+3. Add new entries with site, username, password, and custom fields
+4. Use the search bar to quickly locate items
+5. Export all or selected entries to Excel or JSON for backup
+
+## 📁 Project Structure
+
+```
 password-manager-vault/
-├── app.py              # Main application (Tkinter GUI + logic)
-├── db_handler.py       # SQLite database operations
-├── styles.py           # UI themes and style definitions
-├── requirements.txt    # Python dependencies
-├── LICENSE             # MIT License
-└── screenshots/        # Images for README documentation
-🗃️ Database Schema
-users
-Stores usernames and hashed master passwords.
+├── app.py            # Main Tkinter GUI + logic
+├── db_handler.py     # SQLite operations
+├── styles.py         # UI themes & styles
+├── requirements.txt  # Python dependencies
+├── LICENSE           # MIT License
+└── screenshots/      # README images
+```
 
-passwords
-Stores credential entries: site, username, encrypted password, and custom fields.
-All passwords and sensitive fields are encrypted using PBKDF2.
+## 🗃️ Database Schema
 
-🔐 Security
-PBKDF2 Hashing
-Master passwords and individual credentials are hashed and salted using PBKDF2.
+- **users**
+  - id, username, password_hash
+- **passwords**
+  - id, user_id, title, username, password_encrypted, custom_fields
 
-Input Validation
-Sanitizes all user inputs to prevent SQL injection and other attacks.
+_All sensitive fields are encrypted with PBKDF2._
 
-Offline-First
-Entire vault resides locally; no cloud or external servers by default.
+## 🔐 Security Features
 
-🚀 Future Development
-Multi-User Support
-Separate vaults for different profiles on the same machine.
+- **PBKDF2 Hashing** for master and entry passwords
+- **Input Sanitization** to prevent SQL injection
+- **Offline-First** design; no third-party servers by default
 
-Secure Sharing
-Encrypted export/import for sharing specific credentials with others.
+## 🔮 Future Development
 
-Two-Factor Authentication
-Add 2FA (TOTP) for unlocking the vault.
+- Multi-user vaults on a single machine
+- Secure sharing with encrypted exports
+- Two-Factor Authentication (TOTP)
+- CSV bulk import/export
+- Plugin system for UI themes
 
-Bulk Import/Export
-CSV and encrypted backup formats.
+## 📄 License
 
-Additional Themes & Plugins
-Allow third-party UI themes and extensions.
+This project is licensed under the **MIT License**. See the [LICENSE](LICENSE) file for details.
 
-📄 License
-This project is licensed under the MIT License. See the LICENSE file for details.
+## 🙏 Acknowledgments
 
-🙏 Acknowledgments
-Tkinter – Python’s built-in GUI toolkit
-sqlite3 – Embedded SQL database
-openpyxl – Excel (.xlsx) read/write library
-json – Native JSON serialization
+- **Tkinter** – Python's built-in GUI toolkit
+- **sqlite3** – Embedded SQL database
+- **openpyxl** – Excel file handling
+- **json** – Built-in JSON serialization
 
-Created by Abdul Basit Memon
+---
+
+*Created by Abdul Basit Memon*

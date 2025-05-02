@@ -33,7 +33,7 @@
 
 | Master Password Screen                | Vault Overview                         | Creating a New Folder                  | Credentials View                       |
 |---------------------------------------|----------------------------------------|----------------------------------------|----------------------------------------|
-| ![Master Password](screenshots/MasterPassword.png) | ![Vault](screenshots/Vault.png)             | ![New Folder](screenshots/NewFolder.png)     | ![Credentials](screenshots/Credentials.png) |
+| ![Master Password Screen](Screenshorts/MasterPassword.png) | ![Vault Overview](Screenshorts/Vault.png) |![Creating a New Folder](Screenshorts/NewFolder.png) | ![Credentials View](Screenshorts/Credentails.png) |
 
 ---
 

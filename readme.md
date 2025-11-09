@@ -1,107 +1,259 @@
-Password Manager Vault
-Password Manager Vault is a Notion-style password management application created by Abdul Basit Memon. It allows users to securely store passwords, API keys, and other credentials offline, with support for folder organization, custom fields, and an interactive, customizable interface.
+# 🔐 NotionVault - Advanced Password Manager
 
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Python](https://img.shields.io/badge/Python-3.8+-blue.svg)](https://www.python.org/)
+[![Flask](https://img.shields.io/badge/Flask-3.0+-lightgrey.svg)](https://flask.palletsprojects.com/)
+[![Tkinter](https://img.shields.io/badge/Tkinter-Included-green.svg)](https://docs.python.org/3/library/tkinter.html)
 
+NotionVault is a secure, feature-rich password manager designed for simplicity, security, and versatility. It offers both a sleek desktop application and a modern web interface, ensuring your passwords are encrypted, organized, and accessible across devices.
 
+## 🌟 Features
 
-🌟 Features
-🔒 Securely store passwords, API keys, and other sensitive credentials
+### Core Security
+- **Military-Grade Encryption**: Uses AES encryption with PBKDF2 key derivation for unbreakable security.
+- **Master Password Protection**: Single master password unlocks all stored credentials.
+- **Secure Storage**: SQLite database with encrypted data at rest.
 
-📁 Organize credentials using folders with support for categories
+### User Interface
+- **Desktop App**: Beautiful TTKBootstrap-themed GUI with modern dark mode.
+- **Web App**: Responsive Tailwind CSS interface accessible via browser.
+- **Intuitive Design**: Clean, minimalistic UI inspired by premium password managers.
 
-➕ Add custom fields to credentials as needed
+### Organization
+- **Folders**: Organize passwords into customizable folders.
+- **Block Types**: Support for Credentials, Text notes, Tables, Headings, Titles, Paragraphs, and Quotes.
+- **Search Functionality**: Quick search across all stored items.
+- **Reordering**: Drag-and-drop style reordering of blocks and folders.
 
-✍️ Create and style text, headings, paragraphs, quotes, and tables
+### Advanced Features
+- **Cross-Platform**: Desktop app works on Windows, macOS, Linux; Web app runs in any browser.
+- **Export/Import**: Future support for secure data export/import.
+- **Session Management**: Secure web sessions with configurable timeouts.
+- **Production Ready**: Web app uses Waitress WSGI server for high performance.
 
-🔎 Powerful search function for quick access
+### Development Features
+- **Modular Architecture**: Clean separation of concerns with reusable components.
+- **Extensible**: Easy to add new block types, themes, or features.
+- **Open Source**: Fully open-source under MIT license, community contributions welcome.
 
-📤 Export credentials to Excel (XLSX) or JSON format
+## 🏗️ Architecture
 
-🎨 Apply interactive templates to enhance the UI experience
+### High-Level Overview
 
-🖥️ Screenshots
+```
+┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐
+│   Desktop App   │    │     Web App     │    │   Database      │
+│   (Tkinter)     │    │    (Flask)      │    │   (SQLite)      │
+└─────────────────┘    └─────────────────┘    └─────────────────┘
+         │                       │                       │
+         └───────────────────────┼───────────────────────┘
+                                 │
+                    ┌────────────────────┐
+                    │  Encryption Layer  │
+                    │    (AES + PBKDF2)  │
+                    └────────────────────┘
+```
 
-![Master Password Screen](Screenshorts/MasterPassword.png)
+### Component Diagram
 
-![Vault Overview](Screenshorts/Vault.png)
+```mermaid
+graph TB
+    subgraph "User Interface"
+        DA[Desktop App<br/>TTKBootstrap]
+        WA[Web App<br/>Tailwind CSS]
+    end
 
-![Creating a New Folder](Screenshorts/NewFolder.png)
+    subgraph "Application Layer"
+        DL[Desktop Logic<br/>Tkinter Events]
+        WL[Web Logic<br/>Flask Routes]
+    end
 
-![Credentials View](Screenshorts/Credentails.png)
+    subgraph "Business Logic"
+        DB[Database Handler<br/>SQLite Operations]
+        ENC[Encryption Manager<br/>AES/PBKDF2]
+    end
 
-⚙️ System Requirements
-Python 3.12 or later
+    subgraph "Data Layer"
+        SQLITE[(SQLite Database<br/>Encrypted Vault)]
+    end
 
-tkinter (built-in GUI library)
+    DA --> DL
+    WA --> WL
+    DL --> DB
+    WL --> DB
+    DB --> ENC
+    ENC --> SQLITE
+```
 
-sqlite3 (built-in database)
+### Data Flow
 
-openpyxl (Excel export)
+```mermaid
+sequenceDiagram
+    participant U as User
+    participant UI as UI Layer
+    participant BL as Business Logic
+    participant DB as Database
+    participant ENC as Encryption
 
-json (built-in)
+    U->>UI: Enter Master Password
+    UI->>BL: Validate Password
+    BL->>ENC: Derive Key
+    ENC->>BL: Key Generated
+    BL->>DB: Unlock Vault
+    DB->>BL: Vault Unlocked
+    BL->>UI: Access Granted
 
-📦 Installation
-Clone the repository
+    U->>UI: View/Add/Edit Passwords
+    UI->>BL: CRUD Operations
+    BL->>ENC: Encrypt Data
+    ENC->>BL: Encrypted Data
+    BL->>DB: Store Encrypted Data
+    DB->>UI: Operation Complete
+```
 
-bash
-Copy
-Edit
-git clone https://github.com/abm1119/password-manager-vault.git
-cd password-manager-vault
-Install required dependencies
+### Database Schema
 
-bash
-Copy
-Edit
+```sql
+-- Master password verification
+CREATE TABLE meta (
+    k TEXT PRIMARY KEY,
+    v TEXT
+);
+
+-- Organizational folders
+CREATE TABLE folders (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    name TEXT NOT NULL,
+    sort INTEGER DEFAULT 0
+);
+
+-- Password/note blocks
+CREATE TABLE blocks (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    folder_id INTEGER NOT NULL,
+    type TEXT NOT NULL,
+    content TEXT NOT NULL,
+    sort INTEGER DEFAULT 0,
+    FOREIGN KEY(folder_id) REFERENCES folders(id) ON DELETE CASCADE
+);
+```
+
+## 🚀 Installation
+
+### Prerequisites
+- Python 3.8 or higher
+- pip package manager
+
+### Clone Repository
+```bash
+git clone https://github.com/yourusername/notionvault.git
+cd notionvault
+```
+
+### Install Dependencies
+```bash
 pip install -r requirements.txt
-Run the application
+```
 
-bash
-Copy
-Edit
+### For Desktop App
+The desktop app requires no additional setup beyond the Python dependencies.
+
+### For Web App
+The web app is ready to run with the installed dependencies.
+
+## 📖 Usage
+
+### Desktop Application
+```bash
 python app.py
-📁 Application Structure
-app.py – Main Tkinter GUI and logic
+```
+- First run: Set up a master password and create your vault.
+- Use the sidebar to manage folders.
+- Add blocks using the toolbar buttons.
+- Search and reorder items as needed.
 
-db_handler.py – SQLite database operations
+### Web Application
+```bash
+# Development mode
+set FLASK_ENV=development
+python web_app.py
 
-styles.py – Theme and UI customization
+# Production mode
+python web_app.py
+```
 
-screenshots/ – Screenshots for README and documentation
+Access the web app at the displayed URLs (typically http://127.0.0.1:5000).
 
-🗃️ Database Schema
-users – Stores usernames and hashed passwords
+### Environment Variables
+- `SECRET_KEY`: Flask secret key (auto-generated if not set)
+- `PORT`: Server port (default: 5000)
+- `FLASK_ENV`: Set to 'development' for debug mode
 
-passwords – Stores site, username, and encrypted password
+## 🔧 API Documentation
 
-Uses PBKDF2 for password hashing
+### Web App Endpoints
 
-🔐 Security
-Passwords encrypted using PBKDF2
+#### Authentication
+- `GET /` - Redirect to login or dashboard
+- `GET/POST /login` - User authentication
+- `GET/POST /setup` - Initial vault setup
+- `GET /logout` - End user session
 
-Input validation to prevent SQL injection
+#### Dashboard
+- `GET /dashboard` - Main application interface
+- `POST /add_folder` - Create new folder
+- `POST /rename_folder` - Rename existing folder
+- `POST /delete_folder` - Remove folder
 
-Local-only storage for full offline access and privacy
+#### Block Management
+- `GET /add_block/<btype>` - Add new block form
+- `POST /add_block/<btype>` - Create new block
+- `GET /edit_block/<bid>` - Edit block form
+- `POST /edit_block/<bid>` - Update block
+- `POST /delete_block/<bid>` - Delete block
+- `GET /move_block/<bid>/<direction>` - Reorder blocks
 
-🚀 Future Development
-🧑‍🤝‍🧑 Multi-user account support
+## 🤝 Contributing
 
-📤 Secure password sharing and collaboration
+We welcome contributions! Please follow these steps:
 
-🔐 Two-factor authentication
+1. Fork the repository
+2. Create a feature branch: `git checkout -b feature-name`
+3. Make your changes and add tests
+4. Commit: `git commit -m 'Add feature'`
+5. Push: `git push origin feature-name`
+6. Submit a pull request
 
-📄 Richer template and UI customization features
+### Development Setup
+```bash
+# Install development dependencies
+pip install -r requirements-dev.txt
 
-📁 Bulk import/export with encryption
+# Run tests
+python -m pytest
 
-📄 License
-This project is licensed under the MIT License. See the LICENSE file for details.
+# Format code
+black .
+```
 
-🙏 Acknowledgments
-Tkinter – for the GUI
+## 📄 License
 
-sqlite3 – for local database
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
-openpyxl – for Excel export
+## 🙏 Credits
 
-Python’s built-in json module – for JSON export
+- **Encryption**: Based on Python's cryptography library
+- **UI Frameworks**: Tailwind CSS, TTKBootstrap
+- **Icons**: Emojis and custom icons
+- **Inspiration**: Modern password managers like LastPass and Bitwarden
+
+## 📞 Support
+
+For questions, issues, or contributions:
+- Open an issue on GitHub
+- Email: your-email@example.com
+
+---
+
+**NotionVault** - Your secure digital vault for passwords and sensitive information. 🔒✨</content>
+</xai:function_call">Successfully created file f:/Ideas/Password Manager App/README.md

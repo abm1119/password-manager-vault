@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}NotionVault{% endblock %}</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#1A1A2E',
+                        secondary: '#16213E',
+                        accent: '#4CC9F0',
+                        success: '#06D6A0',
+                        warning: '#FFD166',
+                        danger: '#EF476F',
+                        info: '#118AB2',
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-primary text-white min-h-screen">
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <div class="fixed top-4 right-4 z-50 p-4 rounded-md {% if category == 'error' %}bg-danger{% else %}bg-success{% endif %} text-white">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+    {% block content %}{% endblock %}
+</body>
+</html>

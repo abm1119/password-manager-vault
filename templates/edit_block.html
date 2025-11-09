@@ -1,0 +1,133 @@
+{% extends "base.html" %}
+
+{% block title %}Edit {{ block.btype }} - NotionVault{% endblock %}
+
+{% block content %}
+<div class="min-h-screen flex items-center justify-center bg-gradient-to-br from-primary to-secondary">
+    <div class="bg-secondary p-8 rounded-lg shadow-2xl w-full max-w-md">
+        <div class="text-center mb-8">
+            <h1 class="text-4xl font-bold text-accent mb-2">Edit {{ block.btype }}</h1>
+        </div>
+        <form method="POST" class="space-y-6">
+            {% if block.btype == 'Credential' %}
+            <div>
+                <label for="site" class="block text-sm font-medium text-gray-300">Site</label>
+                <input type="text" id="site" name="site" value="{% if block.data and block.data.get('site') %}{{ block.data.site }}{% endif %}" required
+                       class="mt-1 block w-full px-3 py-2 bg-primary border border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-accent focus:border-accent text-white">
+            </div>
+            <div>
+                <label for="username" class="block text-sm font-medium text-gray-300">Username</label>
+                <input type="text" id="username" name="username" value="{% if block.data and block.data.get('username') %}{{ block.data.username }}{% endif %}"
+                       class="mt-1 block w-full px-3 py-2 bg-primary border border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-accent focus:border-accent text-white">
+            </div>
+            <div>
+                <label for="email" class="block text-sm font-medium text-gray-300">Email</label>
+                <input type="email" id="email" name="email" value="{% if block.data and block.data.get('email') %}{{ block.data.email }}{% endif %}"
+                       class="mt-1 block w-full px-3 py-2 bg-primary border border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-accent focus:border-accent text-white">
+            </div>
+            <div>
+                <label for="password" class="block text-sm font-medium text-gray-300">Password</label>
+                <input type="password" id="password" name="password" value="{% if block.data and block.data.get('password') %}{{ block.data.password }}{% endif %}" required
+                       class="mt-1 block w-full px-3 py-2 bg-primary border border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-accent focus:border-accent text-white">
+            </div>
+            <div>
+                <label for="notes" class="block text-sm font-medium text-gray-300">Notes</label>
+                <textarea id="notes" name="notes" rows="4"
+                          class="mt-1 block w-full px-3 py-2 bg-primary border border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-accent focus:border-accent text-white">{% if block.data and block.data.get('notes') %}{{ block.data.notes }}{% endif %}</textarea>
+            </div>
+            {% elif block.btype == 'Text' %}
+            <div>
+                <label for="text" class="block text-sm font-medium text-gray-300">Text</label>
+                <textarea id="text" name="text" required rows="6"
+                          class="mt-1 block w-full px-3 py-2 bg-primary border border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-accent focus:border-accent text-white">{% if block.data %}{{ block.data }}{% endif %}</textarea>
+            </div>
+            {% elif block.btype == 'Table' %}
+            <div>
+                <label class="block text-sm font-medium text-gray-300 mb-2">Table Data</label>
+                <div id="table-rows" class="space-y-2">
+                    {% if block.data %}
+                    {% for k, v in block.data.items() %}
+                    <div class="flex space-x-2 items-center table-row">
+                        <input type="text" placeholder="Key" value="{{ k }}" class="flex-1 px-3 py-2 bg-primary border border-gray-600 rounded-md text-white focus:outline-none focus:ring-accent focus:border-accent key-input">
+                        <input type="text" placeholder="Value" value="{{ v }}" class="flex-1 px-3 py-2 bg-primary border border-gray-600 rounded-md text-white focus:outline-none focus:ring-accent focus:border-accent value-input">
+                        <button type="button" class="px-3 py-2 bg-danger text-white rounded-md remove-row">Remove</button>
+                    </div>
+                    {% endfor %}
+                    {% else %}
+                    <div class="flex space-x-2 items-center table-row">
+                        <input type="text" placeholder="Key" class="flex-1 px-3 py-2 bg-primary border border-gray-600 rounded-md text-white focus:outline-none focus:ring-accent focus:border-accent key-input">
+                        <input type="text" placeholder="Value" class="flex-1 px-3 py-2 bg-primary border border-gray-600 rounded-md text-white focus:outline-none focus:ring-accent focus:border-accent value-input">
+                        <button type="button" class="px-3 py-2 bg-danger text-white rounded-md remove-row">Remove</button>
+                    </div>
+                    {% endif %}
+                </div>
+                <button type="button" id="add-row" class="mt-3 px-4 py-2 bg-accent hover:bg-blue-600 text-white rounded-md transition duration-300">Add Row</button>
+                <input type="hidden" id="table_data" name="table_data">
+            </div>
+            {% else %}
+            <div>
+                <label for="content" class="block text-sm font-medium text-gray-300">Content</label>
+                <input type="text" id="content" name="content" value="{% if block.data %}{{ block.data }}{% endif %}" required
+                       class="mt-1 block w-full px-3 py-2 bg-primary border border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-accent focus:border-accent text-white">
+            </div>
+            {% endif %}
+            <button type="submit" class="w-full bg-accent hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-md transition duration-300">
+                Update {{ block.btype }}
+            </button>
+        </form>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const tableRows = document.getElementById('table-rows');
+    const addRowBtn = document.getElementById('add-row');
+    const tableDataInput = document.getElementById('table_data');
+
+    function createRow(key = '', value = '') {
+        const row = document.createElement('div');
+        row.className = 'flex space-x-2 items-center table-row';
+        row.innerHTML = `
+            <input type="text" placeholder="Key" value="${key}" class="flex-1 px-3 py-2 bg-primary border border-gray-600 rounded-md text-white focus:outline-none focus:ring-accent focus:border-accent key-input">
+            <input type="text" placeholder="Value" value="${value}" class="flex-1 px-3 py-2 bg-primary border border-gray-600 rounded-md text-white focus:outline-none focus:ring-accent focus:border-accent value-input">
+            <button type="button" class="px-3 py-2 bg-danger text-white rounded-md remove-row">Remove</button>
+        `;
+        return row;
+    }
+
+    function updateTableData() {
+        const rows = tableRows.querySelectorAll('.table-row');
+        const data = [];
+        rows.forEach(row => {
+            const key = row.querySelector('.key-input').value.trim();
+            const value = row.querySelector('.value-input').value.trim();
+            if (key || value) {
+                data.push(`${key}:${value}`);
+            }
+        });
+        tableDataInput.value = data.join('\n');
+    }
+
+    if (addRowBtn) {
+        addRowBtn.addEventListener('click', function() {
+            tableRows.appendChild(createRow());
+        });
+    }
+
+    tableRows.addEventListener('click', function(e) {
+        if (e.target.classList.contains('remove-row')) {
+            e.target.closest('.table-row').remove();
+            updateTableData();
+        }
+    });
+
+    tableRows.addEventListener('input', updateTableData);
+
+    // Initial update
+    updateTableData();
+
+    // Submit form update
+    document.querySelector('form').addEventListener('submit', updateTableData);
+});
+</script>
+{% endblock %}

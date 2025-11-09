@@ -1,6 +1,8 @@
 import os
 import tkinter as tk
-from tkinter import ttk, simpledialog, messagebox
+from tkinter import simpledialog, messagebox, ttk
+from ttkbootstrap import Window
+from ttkbootstrap.dialogs import Messagebox
 import logging
 
 import styles
@@ -26,43 +28,44 @@ class CredentialDialog(tk.Toplevel):
         self.grab_set()
         self.result = None
         # Form fields
-        frm = ttk.Frame(self, padding=10)
-        frm.pack(fill="both", expand=True)
+        self.geometry("500x400")
+        frm = ttk.Frame(self)
+        frm.pack(fill="both", expand=True, padx=10, pady=10)
         # Site
-        ttk.Label(frm, text="Site").grid(row=0, column=0, sticky="w")
+        ttk.Label(frm, text="Site").grid(row=0, column=0, sticky="w", pady=5)
         self.site = ttk.Entry(frm)
-        self.site.grid(row=0, column=1, sticky="ew")
+        self.site.grid(row=0, column=1, sticky="ew", pady=5)
         # Username
-        ttk.Label(frm, text="Username").grid(row=1, column=0, sticky="w")
+        ttk.Label(frm, text="Username").grid(row=1, column=0, sticky="w", pady=5)
         self.username = ttk.Entry(frm)
-        self.username.grid(row=1, column=1, sticky="ew")
+        self.username.grid(row=1, column=1, sticky="ew", pady=5)
         # Email
-        ttk.Label(frm, text="Email").grid(row=2, column=0, sticky="w")
+        ttk.Label(frm, text="Email").grid(row=2, column=0, sticky="w", pady=5)
         self.email = ttk.Entry(frm)
-        self.email.grid(row=2, column=1, sticky="ew")
+        self.email.grid(row=2, column=1, sticky="ew", pady=5)
         # Password
-        ttk.Label(frm, text="Password").grid(row=3, column=0, sticky="w")
+        ttk.Label(frm, text="Password").grid(row=3, column=0, sticky="w", pady=5)
         self.pw_var = tk.StringVar()
         self.password = ttk.Entry(frm, textvariable=self.pw_var, show="*")
-        self.password.grid(row=3, column=1, sticky="ew")
+        self.password.grid(row=3, column=1, sticky="ew", pady=5)
         btn_eye = ttk.Button(frm, text="👁", width=3, command=self.toggle)
-        btn_eye.grid(row=3, column=2)
+        btn_eye.grid(row=3, column=2, padx=5)
         # Notes
-        ttk.Label(frm, text="Notes").grid(row=4, column=0, sticky="w")
+        ttk.Label(frm, text="Notes").grid(row=4, column=0, sticky="w", pady=5)
         self.notes = tk.Text(frm, height=4)
-        self.notes.grid(row=4, column=1, sticky="ew")
+        self.notes.grid(row=4, column=1, sticky="ew", pady=5)
         # Custom fields
         self.custom = {}
         ttk.Button(frm, text="+ Custom Field", command=self.add_custom).grid(
-            row=5, column=0, columnspan=3
+            row=5, column=0, columnspan=3, pady=5
         )
         self.cf_container = ttk.Frame(frm)
-        self.cf_container.grid(row=6, column=0, columnspan=3, sticky="ew")
+        self.cf_container.grid(row=6, column=0, columnspan=3, sticky="ew", pady=5)
         # Buttons
         btn_frm = ttk.Frame(self)
-        btn_frm.pack(fill="x")
+        btn_frm.pack(fill="x", padx=10, pady=10)
         ttk.Button(btn_frm, text="Cancel", command=self.destroy).pack(side="left")
-        ttk.Button(btn_frm, text="Save", command=self.save).pack(side="right")
+        ttk.Button(btn_frm, text="Save", command=self.save, style="Accent.TButton").pack(side="right")
         # Populate
         if data:
             self.site.insert(0, data.get("site", ""))
@@ -130,13 +133,14 @@ class TextDialog(tk.Toplevel):
         self.transient(parent)
         self.grab_set()
         self.result = None
+        self.geometry("400x300")
         txt = tk.Text(self, wrap="word")
         txt.insert("1.0", text)
-        txt.pack(fill="both", expand=True)
+        txt.pack(fill="both", expand=True, padx=10, pady=10)
         btnf = ttk.Frame(self)
-        btnf.pack(fill="x")
+        btnf.pack(fill="x", padx=10, pady=10)
         ttk.Button(btnf, text="Cancel", command=self.destroy).pack(side="left")
-        ttk.Button(btnf, text="Save", command=lambda: self.save(txt)).pack(side="right")
+        ttk.Button(btnf, text="Save", command=lambda: self.save(txt), style="Accent.TButton").pack(side="right")
         self.wait_window()
 
     def save(self, txt):
@@ -152,29 +156,30 @@ class TableDialog(tk.Toplevel):
         self.grab_set()
         self.result = None  # Initialize result attribute
         self.cells = []
+        self.geometry("400x300")
         frm = ttk.Frame(self)
-        frm.pack(padx=10, pady=10)
-        ttk.Button(frm, text="+ Row", command=self.add_row).grid(row=0, column=0)
+        frm.pack(fill="both", expand=True, padx=10, pady=10)
+        ttk.Button(frm, text="+ Row", command=self.add_row).grid(row=0, column=0, pady=5)
         self.tbl = ttk.Frame(frm)
-        self.tbl.grid(row=1, column=0)
+        self.tbl.grid(row=1, column=0, sticky="ew")
         if data:
             for k, v in data:
                 self.add_row(k, v)
         else:
             self.add_row("", "")
         btnf = ttk.Frame(self)
-        btnf.pack(fill="x")
+        btnf.pack(fill="x", padx=10, pady=10)
         ttk.Button(btnf, text="Cancel", command=self.destroy).pack(side="left")
-        ttk.Button(btnf, text="Save", command=self.save).pack(side="right")
+        ttk.Button(btnf, text="Save", command=self.save, style="Accent.TButton").pack(side="right")
         self.wait_window()
 
     def add_row(self, key="", val=""):
         r = len(self.cells)
         e1 = ttk.Entry(self.tbl)
-        e1.grid(row=r, column=0)
+        e1.grid(row=r, column=0, sticky="ew", pady=2)
         e2 = ttk.Entry(self.tbl)
-        e2.grid(row=r, column=1)
-        btn = ttk.Button(self.tbl, text="✕", command=lambda rr=r: self.del_row(rr))
+        e2.grid(row=r, column=1, sticky="ew", pady=2)
+        btn = ttk.Button(self.tbl, text="✕", width=2, command=lambda rr=r: self.del_row(rr))
         btn.grid(row=r, column=2)
         e1.insert(0, key)
         e2.insert(0, val)
@@ -194,42 +199,34 @@ class TableDialog(tk.Toplevel):
 
 
 # -------------------- Main Application --------------------
-class NotionVaultApp(tk.Tk):
+class NotionVaultApp(Window):
     def __init__(self, cipher):
-        super().__init__()
+        super().__init__(themename="superhero")
         self.title("🔐 NotionVault")
-        self.geometry("1024x640")
-        styles.apply_dark_theme(self)
+        self.geometry("1200x700")
+        styles.apply_bootstrap_theme()
         self.db = DatabaseManager(cipher)
         self._build_ui()
         self.load_folders()
         logging.info("Application started.")
 
     def _build_ui(self):
-        self.sidebar = ttk.Frame(self, width=240)
-        self.sidebar.pack(side="left", fill="y")
-        self.folder_lv = tk.Listbox(self.sidebar)
-        self.folder_lv.pack(fill="both", expand=True, padx=5, pady=5)
+        self.sidebar = ttk.Frame(self, width=280)
+        self.sidebar.pack(side="left", fill="y", padx=10, pady=10)
+        self.folder_lv = tk.Listbox(self.sidebar, font=("Helvetica", 12))
+        self.folder_lv.pack(fill="both", expand=True, padx=10, pady=10)
         self.folder_lv.bind("<<ListboxSelect>>", self.on_folder)
         btnf = ttk.Frame(self.sidebar)
-        btnf.pack(fill="x", pady=2)
-        ttk.Button(btnf, text="+", width=2, command=self.add_folder).pack(side="left")
-        ttk.Button(btnf, text="✎", width=2, command=self.rename_folder).pack(
-            side="left"
-        )
-        ttk.Button(btnf, text="✕", width=2, command=self.delete_folder).pack(
-            side="left"
-        )
-        ttk.Button(btnf, text="▲", width=2, command=lambda: self.move_folder(-1)).pack(
-            side="left"
-        )
-        ttk.Button(btnf, text="▼", width=2, command=lambda: self.move_folder(1)).pack(
-            side="left"
-        )
+        btnf.pack(fill="x", pady=5)
+        ttk.Button(btnf, text="+", width=3, command=self.add_folder).pack(side="left", padx=2)
+        ttk.Button(btnf, text="✎", width=3, command=self.rename_folder).pack(side="left", padx=2)
+        ttk.Button(btnf, text="✕", width=3, command=self.delete_folder).pack(side="left", padx=2)
+        ttk.Button(btnf, text="▲", width=3, command=lambda: self.move_folder(-1)).pack(side="left", padx=2)
+        ttk.Button(btnf, text="▼", width=3, command=lambda: self.move_folder(1)).pack(side="left", padx=2)
         right = ttk.Frame(self)
-        right.pack(side="right", expand=True, fill="both")
+        right.pack(side="right", expand=True, fill="both", padx=10, pady=10)
         toolbar = ttk.Frame(right)
-        toolbar.pack(fill="x")
+        toolbar.pack(fill="x", pady=5)
         # Add new block types to toolbar
         for b in [
             "Credential",
@@ -241,26 +238,13 @@ class NotionVaultApp(tk.Tk):
             "Quote",
         ]:
             ttk.Button(
-                toolbar, text=f"+ {b}", command=lambda t=b: self.add_block(t)
-            ).pack(side="left", padx=4)
+                toolbar, text=f"+ {b}", command=lambda t=b: self.add_block(t), style="Accent.TButton"
+            ).pack(side="left", padx=5)
         self.search_var = tk.StringVar()
-        ttk.Entry(toolbar, textvariable=self.search_var, width=20).pack(
-            side="right", padx=4
-        )
-        ttk.Button(toolbar, text="Search", command=self.search).pack(side="right")
-        self.canvas = tk.Canvas(
-            right, bg=styles.colors["bg_dark"], highlightthickness=0
-        )
-        self.scroll = ttk.Scrollbar(right, orient="vertical", command=self.canvas.yview)
-        self.canvas.configure(yscrollcommand=self.scroll.set)
-        self.scroll.pack(side="right", fill="y")
-        self.canvas.pack(side="left", fill="both", expand=True)
-        self.block_frame = ttk.Frame(self.canvas)
-        self.canvas.create_window((0, 0), window=self.block_frame, anchor="nw")
-        self.block_frame.bind(
-            "<Configure>",
-            lambda e: self.canvas.configure(scrollregion=self.canvas.bbox("all")),
-        )
+        ttk.Entry(toolbar, textvariable=self.search_var, width=20).pack(side="right", padx=5)
+        ttk.Button(toolbar, text="Search", command=self.search, style="Success.TButton").pack(side="right", padx=5)
+        self.block_frame = ttk.Frame(right)
+        self.block_frame.pack(fill="both", expand=True)
 
     def load_folders(self):
         self.folder_lv.delete(0, "end")
@@ -329,45 +313,47 @@ class NotionVaultApp(tk.Tk):
             self._create_block_widget(bid, btype, data)
 
     def _create_block_widget(self, bid, btype, data):
-        lf = ttk.Labelframe(self.block_frame, text=btype, padding=5)
-        lf.pack(fill="x", padx=5, pady=5)
+        lf = ttk.Frame(self.block_frame)
+        lf.pack(fill="x", padx=10, pady=10)
+        title = ttk.Label(lf, text=btype, font=("Helvetica", 12, "bold"))
+        title.pack(anchor="w", padx=10, pady=5)
         # Enhanced display for new block types
         if btype == "Credential":
-            ttk.Label(lf, text=f"Site: {data['site']}").pack(anchor="w")
+            ttk.Label(lf, text=f"Site: {data['site']}").pack(anchor="w", padx=10)
         elif btype == "Text":
             txt = data[:50] + "..." if len(data) > 50 else data
-            ttk.Label(lf, text=txt).pack(anchor="w")
+            ttk.Label(lf, text=txt).pack(anchor="w", padx=10)
         elif btype == "Table":
-            txt = ", ".join(fragment for fragment in (f"{k}:{v}" for k, v in data))
-            ttk.Label(lf, text=txt).pack(anchor="w")
+            txt = ', '.join(k + ':' + v for k, v in data)
+            ttk.Label(lf, text=txt).pack(anchor="w", padx=10)
         elif btype == "Heading":
-            ttk.Label(lf, text=data, font=("Segoe UI", 18, "bold")).pack(
-                anchor="w", pady=4
+            ttk.Label(lf, text=data, font=("Helvetica", 18, "bold")).pack(
+                anchor="w", padx=10, pady=4
             )
         elif btype == "Title":
-            ttk.Label(lf, text=data, font=("Segoe UI", 14, "bold")).pack(
-                anchor="w", pady=2
+            ttk.Label(lf, text=data, font=("Helvetica", 14, "bold")).pack(
+                anchor="w", padx=10, pady=2
             )
         elif btype == "Paragraph":
-            ttk.Label(lf, text=data, font=("Segoe UI", 11)).pack(anchor="w", pady=2)
+            ttk.Label(lf, text=data, font=("Helvetica", 11)).pack(anchor="w", padx=10, pady=2)
         elif btype == "Quote":
             ttk.Label(
-                lf, text=f"“{data}”", font=("Segoe UI", 11, "italic"), foreground="#888"
-            ).pack(anchor="w", padx=10, pady=2)
+                lf, text=f"“{data}”", font=("Helvetica", 11, "italic")
+            ).pack(anchor="w", padx=20, pady=2)
         frm = ttk.Frame(lf)
-        frm.pack(anchor="e")
+        frm.pack(anchor="e", padx=10, pady=5)
         ttk.Button(
-            frm, text="✎", width=2, command=lambda: self.edit_block(bid, btype, data)
-        ).pack(side="left")
-        ttk.Button(frm, text="✕", width=2, command=lambda: self.delete_block(bid)).pack(
-            side="left"
+            frm, text="✎", width=3, command=lambda: self.edit_block(bid, btype, data)
+        ).pack(side="left", padx=2)
+        ttk.Button(frm, text="✕", width=3, command=lambda: self.delete_block(bid)).pack(
+            side="left", padx=2
         )
         ttk.Button(
-            frm, text="▲", width=2, command=lambda: self.move_block(bid, -1)
-        ).pack(side="left")
+            frm, text="▲", width=3, command=lambda: self.move_block(bid, -1)
+        ).pack(side="left", padx=2)
         ttk.Button(
-            frm, text="▼", width=2, command=lambda: self.move_block(bid, 1)
-        ).pack(side="left")
+            frm, text="▼", width=3, command=lambda: self.move_block(bid, 1)
+        ).pack(side="left", padx=2)
 
     def add_block(self, btype):
         dlg = None

@@ -111,6 +111,17 @@ class DatabaseManager:
         self.conn.execute("UPDATE blocks SET content=? WHERE id=?", (enc, bid))
         self.conn.commit()
 
+    def fetch_block(self, bid: int):
+        res = self.conn.execute("SELECT id, type, content FROM blocks WHERE id = ?", (bid,))
+        row = res.fetchone()
+        if row:
+            bid, btype, enc_data = row
+            data = json.loads(self.cipher.decrypt(enc_data))
+            return {'id': bid, 'btype': btype, 'data': data}
+        return None
+
+    
+
     def delete_block(self, bid: int):
         self.conn.execute("DELETE FROM blocks WHERE id=?", (bid,))
         self.conn.commit()

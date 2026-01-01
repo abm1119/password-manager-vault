@@ -1,6 +1,6 @@
 import os
 import logging
-import pickle
+
 import socket
 from flask import Flask, render_template, request, redirect, url_for, flash, session
 try:
@@ -11,7 +11,10 @@ from db_handler import (
     DatabaseManager,
     check_master_password,
     setup_new_vault,
+    SimpleCipher
 )
+from flask import jsonify
+from flask_cors import CORS
 
 # Setup logging
 logging.basicConfig(
@@ -21,17 +24,18 @@ logging.basicConfig(
 )
 
 app = Flask(__name__)
+CORS(app) # Enable CORS for Chrome Extension
 app.secret_key = os.environ.get('SECRET_KEY', os.urandom(24).hex())
 
 @app.route('/')
 def index():
-    if 'cipher' not in session:
+    if 'key' not in session:
         return redirect(url_for('login'))
     return redirect(url_for('dashboard'))
 
 @app.route('/logout')
 def logout():
-    session.pop('cipher', None)
+    session.pop('key', None)
     return redirect(url_for('login'))
 
 @app.route('/login', methods=['GET', 'POST'])
@@ -41,7 +45,7 @@ def login():
         if password:
             ok, cipher = check_master_password(password)
             if ok:
-                session['cipher'] = pickle.dumps(cipher).decode('latin1')
+                session['key'] = cipher.key.hex()
                 return redirect(url_for('dashboard'))
             else:
                 flash('Incorrect password', 'error')
@@ -58,7 +62,7 @@ def setup():
         p2 = request.form.get('password2')
         if p1 and p2 and p1 == p2 and len(p1) >= 8:
             cipher = setup_new_vault(p1)
-            session['cipher'] = pickle.dumps(cipher).decode('latin1')
+            session['key'] = cipher.key.hex()
             return redirect(url_for('dashboard'))
         else:
             flash('Passwords must match and be at least 8 characters', 'error')
@@ -66,9 +70,9 @@ def setup():
 
 @app.route('/dashboard')
 def dashboard():
-    if 'cipher' not in session:
+    if 'key' not in session:
         return redirect(url_for('login'))
-    cipher = pickle.loads(session['cipher'].encode('latin1'))
+    cipher = SimpleCipher(key=bytes.fromhex(session['key']))
     db = DatabaseManager(cipher)
     folders = db.fetch_folders()
     if folders:
@@ -81,43 +85,43 @@ def dashboard():
 
 @app.route('/add_folder', methods=['POST'])
 def add_folder():
-    if 'cipher' not in session:
+    if 'key' not in session:
         return redirect(url_for('login'))
     name = request.form.get('name')
     if name:
-        cipher = pickle.loads(session['cipher'].encode('latin1'))
+        cipher = SimpleCipher(key=bytes.fromhex(session['key']))
         db = DatabaseManager(cipher)
         db.add_folder(name)
     return redirect(url_for('dashboard'))
 
 @app.route('/rename_folder', methods=['POST'])
 def rename_folder():
-    if 'cipher' not in session:
+    if 'key' not in session:
         return redirect(url_for('login'))
     fid = request.form.get('fid')
     new_name = request.form.get('new_name')
     if fid and new_name:
-        cipher = pickle.loads(session['cipher'].encode('latin1'))
+        cipher = SimpleCipher(key=bytes.fromhex(session['key']))
         db = DatabaseManager(cipher)
         db.update_folder(int(fid), new_name)
     return redirect(url_for('dashboard'))
 
 @app.route('/delete_folder', methods=['POST'])
 def delete_folder():
-    if 'cipher' not in session:
+    if 'key' not in session:
         return redirect(url_for('login'))
     fid = request.form.get('fid')
     if fid:
-        cipher = pickle.loads(session['cipher'].encode('latin1'))
+        cipher = SimpleCipher(key=bytes.fromhex(session['key']))
         db = DatabaseManager(cipher)
         db.delete_folder(int(fid))
     return redirect(url_for('dashboard'))
 
 @app.route('/add_block/<btype>', methods=['GET', 'POST'])
 def add_block(btype):
-    if 'cipher' not in session:
+    if 'key' not in session:
         return redirect(url_for('login'))
-    cipher = pickle.loads(session['cipher'].encode('latin1'))
+    cipher = SimpleCipher(key=bytes.fromhex(session['key']))
     db = DatabaseManager(cipher)
     folder_id = request.args.get('folder', 1)  # default to first
     if request.method == 'POST':
@@ -142,9 +146,9 @@ def add_block(btype):
 
 @app.route('/edit_block/<int:bid>', methods=['GET', 'POST'])
 def edit_block(bid):
-    if 'cipher' not in session:
+    if 'key' not in session:
         return redirect(url_for('login'))
-    cipher = pickle.loads(session['cipher'].encode('latin1'))
+    cipher = SimpleCipher(key=bytes.fromhex(session['key']))
     db = DatabaseManager(cipher)
     block = db.fetch_block(bid)
     if not block:
@@ -172,18 +176,18 @@ def edit_block(bid):
 
 @app.route('/delete_block/<int:bid>', methods=['POST'])
 def delete_block(bid):
-    if 'cipher' not in session:
+    if 'key' not in session:
         return redirect(url_for('login'))
-    cipher = pickle.loads(session['cipher'].encode('latin1'))
+    cipher = SimpleCipher(key=bytes.fromhex(session['key']))
     db = DatabaseManager(cipher)
     db.delete_block(bid)
     return redirect(url_for('dashboard'))
 
 @app.route('/move_block/<int:bid>/<direction>')
 def move_block(bid, direction):
-    if 'cipher' not in session:
+    if 'key' not in session:
         return redirect(url_for('login'))
-    cipher = pickle.loads(session['cipher'].encode('latin1'))
+    cipher = SimpleCipher(key=bytes.fromhex(session['key']))
     db = DatabaseManager(cipher)
     # Get current folder
     folder_id = request.args.get('folder', 1)
@@ -201,7 +205,85 @@ def move_block(bid, direction):
         pass
     return redirect(url_for('dashboard', folder=folder_id))
 
-# Add more routes for CRUD operations
+# -------------------- API Endpoints for Extension --------------------
+@app.route('/api/login', methods=['POST'])
+def api_login():
+    data = request.get_json()
+    password = data.get('password')
+    if password:
+        ok, cipher = check_master_password(password)
+        if ok:
+            # Return the key in hex content for the extension to use or session token
+            # For simplicity, we'll use a session-based approach
+            session['key'] = cipher.key.hex()
+            return jsonify({'success': True, 'key': cipher.key.hex()})
+    return jsonify({'success': False, 'error': 'Invalid password'}), 401
+
+@app.route('/api/entries', methods=['GET'])
+def api_get_entries():
+    # Allow passing key via header or use session
+    key_hex = request.headers.get('X-Vault-Key') or session.get('key')
+    if not key_hex:
+        return jsonify({'error': 'Unauthorized'}), 401
+    
+    try:
+        cipher = SimpleCipher(key=bytes.fromhex(key_hex))
+        db = DatabaseManager(cipher)
+        
+        # Get all folders
+        folders = db.fetch_folders()
+        all_entries = []
+        
+        for fid, fname in folders:
+            blocks = db.fetch_blocks(fid)
+            for bid, btype, data in blocks:
+                if btype == 'Credential':
+                    entry = {
+                        'id': bid,
+                        'folder': fname,
+                        'site': data.get('site', ''),
+                        'username': data.get('username', ''),
+                        'password': data.get('password', ''), # Be careful sending this
+                        'url': data.get('site', ''),  # specific for extension auto-fill
+                        'notes': data.get('notes', '')
+                    }
+                    all_entries.append(entry)
+                    
+        return jsonify({'entries': all_entries})
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/api/add', methods=['POST'])
+def api_add_entry():
+    key_hex = request.headers.get('X-Vault-Key') or session.get('key')
+    if not key_hex:
+        return jsonify({'error': 'Unauthorized'}), 401
+        
+    data = request.json
+    try:
+        cipher = SimpleCipher(key=bytes.fromhex(key_hex))
+        db = DatabaseManager(cipher)
+        
+        # Default to first folder if not specified
+        folders = db.fetch_folders()
+        if not folders:
+            folder_id = db.add_folder("General")
+        else:
+            folder_id = folders[0][0]
+            
+        block_data = {
+            'site': data.get('site'),
+            'username': data.get('username'),
+            'email': data.get('email', ''),
+            'password': data.get('password'),
+            'notes': data.get('notes', ''),
+            'custom': {}
+        }
+        
+        db.add_block(folder_id, 'Credential', block_data)
+        return jsonify({'success': True})
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
 
 def get_local_ip():
     s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)

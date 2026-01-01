@@ -1,123 +1,81 @@
-# 🔐 Password Manager Vault
+# 🔐 NotionVault - Advanced Password Manager
 
-**Password Manager Vault** is a Notion-style password management desktop application created by **Abdul Basit Memon**. It enables users to securely store passwords, API keys, and other credentials _offline_, offering folder organization, custom fields, rich content blocks, and an interactive, customizable interface.
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Python](https://img.shields.io/badge/Python-3.8+-blue.svg)](https://www.python.org/)
+[![Flask](https://img.shields.io/badge/Flask-3.0+-lightgrey.svg)](https://flask.palletsprojects.com/)
+[![Manifest V3](https://img.shields.io/badge/Chrome-Manifest%20V3-green.svg)](https://developer.chrome.com/docs/extensions/mv3/intro/)
 
----
-
-## 🌟 Features
-
-- **Secure Storage**  
-  Store passwords, API keys, and other sensitive data locally.
-
-- **Folder Organization**  
-  Create multiple folders and categorize credentials.
-
-- **Custom Fields**  
-  Add arbitrary fields to any credential entry (e.g., “Security Question,” “PIN,” etc.).
-
-- **Rich Content Blocks**  
-  Insert and style headings, paragraphs, quotes, tables, and free-form text within any folder.
-
-- **Powerful Search**  
-  Quickly find entries across all folders by keyword or tag.
-
-- **Export**  
-  Export your vault to **Excel (.xlsx)** or **JSON** for backup and portability.
-
-- **Themes & Templates**  
-  Apply built-in UI themes or import your own templates to change the look and feel.
+NotionVault is a secure, feature-rich password manager designed for simplicity, security, and versatility. It offers both a sleek desktop application and a modern web interface, ensuring your passwords are encrypted, organized, and accessible across devices.
 
 ---
 
-## 🖥️ Screenshots
+## 📖 Project Documentation
 
-| Master Password Screen                | Vault Overview                         | Creating a New Folder                  | Credentials View                       |
-|---------------------------------------|----------------------------------------|----------------------------------------|----------------------------------------|
-| ![Master Password Screen](Screenshorts/MasterPassword.png) | ![Vault Overview](Screenshorts/Vault.png) |![Creating a New Folder](Screenshorts/NewFolder.png) | ![Credentials View](Screenshorts/Credentails.png) |
+We have comprehensive technical documentation available for developers and power users:
 
----
-
-## ⚙️ System Requirements
-
-- **Python** ≥ 3.12  
-- **Tkinter** (built-in)  
-- **sqlite3** (built-in)  
-- **openpyxl** (for Excel export)  
-- **json** (built-in)
+👉 **[View Technical Documentation & Architecture Reference](TECHNICAL_DOCUMENTATION.md)**
 
 ---
 
-## 📦 Installation
+## 🌟 Key Features
 
-1. **Clone the repository**  
-   ```bash
-   git clone https://github.com/abm1119/password-manager-vault.git
-   cd password-manager-vault
+### 🛡️ Military-Grade Security
+- **PBKDF2 Key Derivation**: 200,000 iterations for bulletproof master password security.
+- **Local-First Encryption**: Data is encrypted locally before being stored in the SQLite vault.
+- **Zero-Knowledge Architecture**: Your master password never leaves your machine.
 
-2. **Install dependencies**
-   ```bash
-   pip install -r requirements.txt
-   ```
+### 🍱 Multi-Client Ecosystem
+- **Sleek Desktop App**: TTKBootstrap-themed GUI with advanced organizational tools.
+- **Responsive Web Dashboard**: Manage your vault from any browser with a stunning Tailwind CSS interface.
+- **Chrome Extension**: Intelligent auto-fill, credential fetching, and on-the-fly password generation.
 
-3. **Run the application**
-   ```bash
-   python app.py
-   ```
+### 📂 Organization & Productivity
+- **Modular Blocks**: Store more than just passwords—Text notes, Tables, Headings, and Quotes.
+- **Smart Folders**: Custom categorization with drag-and-drop reordering.
+- **Instant Search**: Find any credential or note in milliseconds.
 
-## 💻 Usage
+---
 
-1. Set a **master password** on first launch
-2. Create folders for organizing your credentials
-3. Add new entries with site, username, password, and custom fields
-4. Use the search bar to quickly locate items
-5. Export all or selected entries to Excel or JSON for backup
+## 🏗️ High-Level Architecture
 
-## 📁 Project Structure
+![NotionVault Architecture](arch-diagram.png)
 
-```
-password-manager-vault/
-├── app.py            # Main Tkinter GUI + logic
-├── db_handler.py     # SQLite operations
-├── styles.py         # UI themes & styles
-├── requirements.txt  # Python dependencies
-├── LICENSE           # MIT License
-└── screenshots/      # README images
+*Detailed component breakdown and data flow diagrams are available in the [Technical Documentation](TECHNICAL_DOCUMENTATION.md).*
+
+---
+
+## 🚀 Quick Start
+
+### 1. Prerequisites
+- Python 3.8 or higher
+- `pip` package manager
+
+### 2. Installation
+```bash
+git clone https://github.com/yourusername/notionvault.git
+cd notionvault
+pip install -r requirements.txt
 ```
 
-## 🗃️ Database Schema
+### 3. Running the Apps
+- **Desktop**: `python app.py`
+- **Web App**: `python web_app.py`
 
-- **users**
-  - id, username, password_hash
-- **passwords**
-  - id, user_id, title, username, password_encrypted, custom_fields
+### 4. Chrome Extension
+1. Open Chrome and go to `chrome://extensions/`.
+2. Enable "Developer mode".
+3. Click "Load unpacked" and select the `PM_chrome_Extension` folder.
 
-_All sensitive fields are encrypted with PBKDF2._
+---
 
-## 🔐 Security Features
+## 🤝 Contributing
 
-- **PBKDF2 Hashing** for master and entry passwords
-- **Input Sanitization** to prevent SQL injection
-- **Offline-First** design; no third-party servers by default
-
-## 🔮 Future Development
-
-- Multi-user vaults on a single machine
-- Secure sharing with encrypted exports
-- Two-Factor Authentication (TOTP)
-- CSV bulk import/export
-- Plugin system for UI themes
+We welcome contributions! Please see our [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines on how to get involved.
 
 ## 📄 License
 
-This project is licensed under the **MIT License**. See the [LICENSE](LICENSE) file for details.
-
-## 🙏 Acknowledgments
-
-- **Tkinter** – Python's built-in GUI toolkit
-- **sqlite3** – Embedded SQL database
-- **openpyxl** – Excel file handling
-- **json** – Built-in JSON serialization
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
 ---
 
-*Created by Abdul Basit Memon*
+**NotionVault** - Your secure digital vault for passwords and sensitive information. 🔒✨

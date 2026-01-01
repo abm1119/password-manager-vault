@@ -1,0 +1,52 @@
+name: Bug Report
+description: File a bug report to help us improve NotionVault
+labels: [bug]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to fill out this bug report!
+  - type: textarea
+    id: description
+    attributes:
+      label: Bug Description
+      description: A clear and concise description of what the bug is.
+    validations:
+      required: true
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Steps to Reproduce
+      description: |
+        1. Go to '...'
+        2. Click on '....'
+        3. Scroll down to '....'
+        4. See error
+    validations:
+      required: true
+  - type: textarea
+    id: expected-behavior
+    attributes:
+      label: Expected Behavior
+      description: A clear and concise description of what you expected to happen.
+  - type: input
+    id: version
+    attributes:
+      label: Version
+      description: What version of NotionVault are you using? (e.g. 2.0.0)
+  - type: dropdown
+    id: environment
+    attributes:
+      label: Environment
+      options:
+        - Windows 10
+        - Windows 11
+        - macOS
+        - Linux
+        - Chrome Extension
+        - Web App
+  - type: textarea
+    id: logs
+    attributes:
+      label: Relevant Logs
+      description: Please paste any relevant logs (app.log, native_host.log, or browser console logs).

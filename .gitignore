@@ -28,7 +28,6 @@ MANIFEST
 
 # PyInstaller
 *.manifest
-*.spec
 
 # Installer logs
 pip-log.txt
@@ -151,4 +150,11 @@ app.log
 *.exe
 dist/
 build/</content>
-</xai:function_call">Successfully created file f:/Ideas/Password Manager App/.gitignore
+
+# Project specific shortcuts
+dist_extension/
+*.crx
+*.pem
+native_host.log
+com.notionvault.passwords.json
+

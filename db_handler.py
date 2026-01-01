@@ -3,10 +3,15 @@ from itertools import cycle
 
 
 class SimpleCipher:
-    def __init__(self, master_pwd: str, salt: bytes):
-        self.key = hashlib.pbkdf2_hmac(
-            "sha256", master_pwd.encode(), salt, 200_000, dklen=32
-        )
+    def __init__(self, master_pwd: str = None, salt: bytes = None, key: bytes = None):
+        if key:
+             self.key = key
+        elif master_pwd and salt:
+            self.key = hashlib.pbkdf2_hmac(
+                "sha256", master_pwd.encode(), salt, 200_000, dklen=32
+            )
+        else:
+            raise ValueError("Must provide key OR (master_pwd and salt)")
 
     def encrypt(self, text: str) -> str:
         if not text:

@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NotionVault</title>
+    <link rel="stylesheet" href="popup.css">
+    <!-- Using Google Fonts for Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+    <header>
+        <div class="logo">
+            <span>🔐 NotionVault</span>
+        </div>
+        <button id="addBtn" class="icon-btn" title="Add New">+</button>
+    </header>
+
+    <div id="notification" class="notification">Action Successful</div>
+
+    <!-- Login View -->
+    <div id="loginView" class="view active">
+        <div class="auth-container">
+            <div style="font-size: 48px;">🔒</div>
+            <h2>Welcome Back</h2>
+            <p style="color: var(--text-secondary); font-size: 13px;">Enter your master password to unlock your vault.</p>
+            <input type="password" id="masterPassword" placeholder="Master Password" autofocus>
+            <button id="loginBtn">Unlock Vault</button>
+            <div id="loginError" style="color: var(--danger); font-size: 12px;"></div>
+        </div>
+    </div>
+
+    <!-- Dashboard View -->
+    <div id="dashboardView" class="view">
+        <div class="search-bar">
+            <input type="text" id="searchInput" placeholder="Search passwords...">
+        </div>
+        <div id="entriesList" class="entry-list">
+            <!-- Entries will be injected here -->
+        </div>
+    </div>
+
+    <!-- Detail/Add View -->
+    <div id="detailView" class="view">
+        <div class="detail-header">
+            <button id="backBtn" class="secondary" style="width: auto;">← Back</button>
+            <h3 id="detailTitle" style="margin:0">Add Entry</h3>
+        </div>
+        
+        <div class="field-group">
+            <label class="field-label">Website (URL)</label>
+            <input type="text" id="entrySite" placeholder="https://example.com">
+        </div>
+
+        <div class="field-group">
+            <label class="field-label">Username</label>
+            <div class="copy-field">
+                <input type="text" id="entryUsername" placeholder="johndoe">
+                <span class="copy-icon" data-target="entryUsername">📋</span>
+            </div>
+        </div>
+
+        <div class="field-group">
+            <label class="field-label">Password</label>
+            <div class="copy-field">
+                <input type="password" id="entryPassword" placeholder="••••••••">
+                <span class="copy-icon" data-target="entryPassword">📋</span>
+            </div>
+            <div style="margin-top:8px; display:flex; gap:8px;">
+                <button id="togglePassBtn" class="secondary" style="padding:4px; font-size:12px;">Show</button>
+                <button id="generateBtn" class="secondary" style="padding:4px; font-size:12px;">Generate</button>
+            </div>
+        </div>
+
+        <div class="field-group">
+            <label class="field-label">Notes</label>
+            <input type="text" id="entryNotes" placeholder="Optional notes">
+        </div>
+
+        <button id="saveEntryBtn" style="margin-top: 16px;">Save Entry</button>
+    </div>
+
+    <div class="status-badge">
+        <div id="statusDot" class="status-dot"></div>
+        <span id="statusText">Connecting...</span>
+    </div>
+
+    <script src="popup.js"></script>
+</body>
+</html>

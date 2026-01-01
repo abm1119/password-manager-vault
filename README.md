@@ -52,8 +52,8 @@ We have comprehensive technical documentation available for developers and power
 
 ### 2. Installation
 ```bash
-git clone https://github.com/yourusername/notionvault.git
-cd notionvault
+git clone https://github.com/abm1119/password-manager-vault.git
+cd password-manager-vault
 pip install -r requirements.txt
 ```
 

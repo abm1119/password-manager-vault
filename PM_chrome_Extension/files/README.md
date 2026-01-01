@@ -36,7 +36,7 @@ An intelligent, secure password manager that seamlessly integrates with your bro
 ### For Development
 1. **Clone Repository**
    ```bash
-   git clone https://github.com/yourusername/securevault-extension.git
+   git clone https://github.com/abm1119/password-manager-vault.git
    cd securevault-extension
    ```
 

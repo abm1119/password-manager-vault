@@ -17,7 +17,7 @@ This project follows a code of conduct to ensure a welcoming environment for all
 
 1. **Fork the Repository**
    ```bash
-   git clone https://github.com/yourusername/notionvault.git
+   git clone https://github.com/abm1119/password-manager-vault.git
    cd notionvault
    ```
 
